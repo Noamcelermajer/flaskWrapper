@@ -1,7 +1,9 @@
+"""
+Writen by Noam Celermajer and TechUSM
+"""
 import threading
-
 import flask
-
+import os , os.path
 
 class fWrapper():
     def __init__(self, port=9090, host="0.0.0.0"):
@@ -20,4 +22,21 @@ class fWrapper():
         return "add this method to your class <br>def route_index(self,path, request, flaskObj):"
 
     def route_404(self, path, request, flaskObj):
-        return "Error 404 Not Found!!!"
+        rsp = flask.make_response("Error: 404 Not Found", 404)
+        return rsp
+
+    def downloadFile(self, file,name):
+        return flask.send_file(filename_or_fp=file,attachment_filename=name,as_attachment=True)
+    def redirect(self,url):
+        rsp =flask.make_response(url,303)
+        rsp.headers["Location"]=url
+        return rsp
+    def static(self,file):
+        try:
+            return open(os.path.abspath(file)).read()
+        except Exception as eee:
+            rsp = flask.make_response("<pre>{0}</pre>".format(eee).replace(os.path.abspath(file),"."), 404)
+            return rsp
+
+
+
