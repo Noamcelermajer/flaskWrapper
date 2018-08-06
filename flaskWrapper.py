@@ -33,7 +33,11 @@ class fWrapper():
         return rsp
     def static(self,file):
         try:
-            return open(os.path.abspath(file)).read()
+            response = flask.make_response(open(os.path.abspath(file),"rb").read())
+            if file[-4:].upper() in [".PNG","JPEG",".JPG",".BMP",".TIFF",".XCF"]:
+                response.headers.set('Content-Type', 'image/'+file[-4:].replace(".",""))
+            return response
+
         except Exception as eee:
             rsp = flask.make_response("<pre>{0}</pre>".format(eee).replace(os.path.abspath(file),"."), 404)
             return rsp
